@@ -1,3 +1,8 @@
+mod vec;
+
+use vec::*;
+
+
 fn main() {
     let nx = 200;
     let ny = 100;
@@ -6,13 +11,15 @@ fn main() {
 
     for j in (0..ny).rev() {
         for i in 0..nx {
-            let r = (i as f32) / (nx as f32);
-            let g = (j as f32) / (ny as f32);
-            let b = 0.2;
+            let col = Vec3::new(
+                (i as f32) / (nx as f32),
+                (j as f32) / (ny as f32),
+                0.2
+            );
 
-            let ir = (255.99 * r) as u32;
-            let ig = (255.9 * g) as u32;
-            let ib = (255.9 * b) as u32;
+            let ir = (255.99 * col.r()) as u32;
+            let ig = (255.9 * col.g()) as u32;
+            let ib = (255.9 * col.b()) as u32;
 
             print!("{} {} {}\n", ir, ig, ib);
         }
