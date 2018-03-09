@@ -1,4 +1,7 @@
+use std::ops;
+use std::f32;
 
+#[derive(Clone, Copy)]
 pub struct Vec3 {
     e: [f32; 3],
 }
@@ -26,4 +29,58 @@ impl Vec3 {
 
     #[inline]
     pub fn b(&self) -> f32 { self.e[2] }
+
+    pub fn length(&self) -> f32 {
+        f32::sqrt(self.squared_length())
+    }
+
+    pub fn squared_length(&self) -> f32 {
+        self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
+    }
+
+    pub fn unit_vector(self) -> Vec3 {
+        let length = self.length();
+        self / length
+    }
+}
+
+
+impl ops::Add for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, other: Vec3) -> Vec3 {
+        Vec3 {
+            e: [
+                self.e[0] + other.e[0],
+                self.e[1] + other.e[1],
+                self.e[2] + other.e[2],
+            ]
+        }
+    }
+}
+
+impl ops::Mul<f32> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, t: f32) -> Vec3 {
+        Vec3 {
+            e: [ self.e[0] * t, self.e[1] * t, self.e[2] * t ]
+        }
+    }
+}
+
+impl ops::Mul<Vec3> for f32 {
+    type Output = Vec3;
+
+    fn mul(self, v: Vec3) -> Vec3 {
+        v * self
+    }
+}
+
+impl ops::Div<f32> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, t: f32) -> Vec3 {
+        Vec3 { e: [self.e[0] / t, self.e[1] / t, self.e[2] / t] }
+    }
 }
