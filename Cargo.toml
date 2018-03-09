@@ -1,0 +1,6 @@
+[package]
+name = "ray3"
+version = "0.1.0"
+authors = ["Mukhamed Karanashev <menchauser@gmail.com>"]
+
+[dependencies]
