@@ -45,6 +45,11 @@ impl Vec3 {
 }
 
 
+pub fn dot(v1: &Vec3, v2: &Vec3) -> f32 {
+    v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()
+}
+
+
 impl ops::Add for Vec3 {
     type Output = Vec3;
 
@@ -58,6 +63,21 @@ impl ops::Add for Vec3 {
         }
     }
 }
+
+impl<'a> ops::Sub for &'a Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, other: &'a Vec3) -> Vec3 {
+        Vec3 {
+            e: [
+                self.e[0] - other.e[0],
+                self.e[1] - other.e[1],
+                self.e[2] - other.e[2]
+            ]
+        }
+    }
+}
+
 
 impl ops::Mul<f32> for Vec3 {
     type Output = Vec3;
