@@ -1,14 +1,19 @@
+extern crate rand;
+
 mod vec;
 mod ray;
 mod hitable;
 mod sphere;
+mod camera;
 
 use vec::Vec3;
 use ray::Ray;
 use hitable::*;
 use sphere::Sphere;
+use camera::*;
 
 use std::f32;
+use rand::Rng;
 
 
 fn color(r: Ray, world: &Hitable) -> Vec3 {
@@ -28,15 +33,13 @@ fn color(r: Ray, world: &Hitable) -> Vec3 {
 
 
 fn main() {
-    let nx = 200;
-    let ny = 100;
+    let nx = 400;
+    let ny = 200;
+    let ns = 100;
 
     print!("P3\n{} {}\n255\n", nx, ny);
 
-    let lower_left_corner = Vec3::new(-2.0, -1.0, -1.0);
-    let horizontal = Vec3::new(4.0, 0.0, 0.0);
-    let vertical = Vec3::new(0.0, 2.0, 0.0);
-    let origin = Vec3::new(0.0, 0.0, 0.0);
+    let cam = Camera::new();
 
     let sphere1 = Sphere::new(
         Vec3::new(0.0, 0.0, -1.0),
@@ -51,12 +54,19 @@ fn main() {
         list: objs,
     };
 
+    let mut rng = rand::os::OsRng::new().unwrap();
+
     for j in (0..ny).rev() {
         for i in 0..nx {
-            let u = (i as f32) / (nx as f32);
-            let v = (j as f32) / (ny as f32);
-            let r = Ray::new(origin, lower_left_corner + u * horizontal + v * vertical);
-            let col = color(r, &world);
+            let mut col = Vec3::new(0.0, 0.0, 0.0);
+            for _ in 0..ns {
+                let u = (i as f32 + rng.next_f32()) / (nx as f32);
+                let v = (j as f32 + rng.next_f32()) / (ny as f32);
+                let r = cam.get_ray(u, v);
+                col = col + color(r, &world);
+            }
+
+            col = col / (ns as f32);
 
             let ir = (255.99 * col.r()) as u32;
             let ig = (255.99 * col.g()) as u32;
