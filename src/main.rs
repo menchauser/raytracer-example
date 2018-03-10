@@ -1,34 +1,28 @@
 mod vec;
 mod ray;
+mod hitable;
+mod sphere;
 
 use vec::Vec3;
-use vec::dot;
 use ray::Ray;
+use hitable::*;
+use sphere::Sphere;
+
+use std::f32;
 
 
-fn hit_sphere(center: Vec3, radius: f32, r: Ray) -> f32 {
-    let oc = &r.origin() - &center;
-    let a = dot(&r.direction(), &r.direction());
-    let b = 2.0 * dot(&oc, &r.direction());
-    let c = dot(&oc, &oc) - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
-    if discriminant < 0.0 {
-        -1.0
-    } else {
-        (-b - f32::sqrt(discriminant)) / (2.0 * a)
-    }
-}
-
-
-fn color(r: Ray) -> Vec3 {
-    let t = hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, r);
-    if t > 0.0 {
-        let n = r.point_at_parameter(t) - Vec3::new(0.0, 0.0, -1.0);
-        0.5 * Vec3::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0)
-    } else {
-        let unit_direction = r.direction().unit_vector();
-        let t = 0.5 * (unit_direction.y() + 1.0);
-        (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
+fn color(r: Ray, world: &Hitable) -> Vec3 {
+    let rec = world.hit(r, 0.0, f32::MAX);
+    match rec {
+        Some(r) => {
+            let n = r.normal;
+            0.5 * Vec3::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0)
+        },
+        None => {
+            let unit_direction = r.direction().unit_vector();
+            let t = 0.5 * (unit_direction.y() + 1.0);
+            (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
+        },
     }
 }
 
@@ -44,12 +38,25 @@ fn main() {
     let vertical = Vec3::new(0.0, 2.0, 0.0);
     let origin = Vec3::new(0.0, 0.0, 0.0);
 
+    let sphere1 = Sphere::new(
+        Vec3::new(0.0, 0.0, -1.0),
+        0.5
+    );
+    let sphere2 = Sphere::new(
+        Vec3::new(0.0, -100.5, -1.0),
+        100.0
+    );
+    let objs: Vec<&Hitable> = vec![&sphere1, &sphere2];
+    let world = HitableList { 
+        list: objs,
+    };
+
     for j in (0..ny).rev() {
         for i in 0..nx {
             let u = (i as f32) / (nx as f32);
             let v = (j as f32) / (ny as f32);
             let r = Ray::new(origin, lower_left_corner + u * horizontal + v * vertical);
-            let col = color(r);
+            let col = color(r, &world);
 
             let ir = (255.99 * col.r()) as u32;
             let ig = (255.99 * col.g()) as u32;
