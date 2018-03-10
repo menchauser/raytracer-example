@@ -54,7 +54,7 @@ fn main() {
         list: objs,
     };
 
-    let mut rng = rand::os::OsRng::new().unwrap();
+    let mut rng = rand::thread_rng();
 
     for j in (0..ny).rev() {
         for i in 0..nx {
