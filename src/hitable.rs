@@ -23,13 +23,15 @@ pub struct HitableList<'a> {
 impl<'a> Hitable for HitableList<'a> {
     fn hit(&self, r: Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let mut temp_rec: Option<HitRecord> = None;
-        let mut closest_so_far =  t_max;
+        let mut closest_so_far = t_max;
 
         for h in self.list.iter() {
-            temp_rec = h.hit(r, t_min, closest_so_far);
-            match temp_rec.clone() {
-                Some(rec) => 
-                   closest_so_far = rec.t,
+            let x = h.hit(r, t_min, closest_so_far);
+            match x {
+                Some(rec) => {
+                   closest_so_far = rec.t;
+                   temp_rec = Some(rec)
+                },
                 None => {} 
             }
         }
