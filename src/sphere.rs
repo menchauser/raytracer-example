@@ -29,10 +29,11 @@ impl Hitable for Sphere {
             let sol1 = (- b - f32::sqrt(discriminant)) / a;
             if sol1 < t_max && sol1 > t_min {
                 let p = &r.point_at_parameter(sol1);
+                let normal = (p - &self.center) / self.radius;
                 let rec = HitRecord {
                     t: sol1,
-                    p: *p,
-                    normal: (p - &self.center) / self.radius,
+                    p: p.clone(),
+                    normal: normal,
                 };
                 return Some(rec)
             } 
@@ -41,7 +42,7 @@ impl Hitable for Sphere {
                 let p = &r.point_at_parameter(sol2);
                 let rec = HitRecord {
                     t: sol1,
-                    p: *p,
+                    p: p.clone(),
                     normal: (p - &self.center) / self.radius
                 };
                 return Some(rec)

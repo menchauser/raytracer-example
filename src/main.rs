@@ -16,6 +16,10 @@ use std::f32;
 use rand::Rng;
 
 
+static WHITE_COLOR: Vec3 = Vec3 { e: [1.0, 1.0, 1.0] };
+static LIGHT_BLUE_COLOR: Vec3 = Vec3 { e: [0.5, 0.7, 1.0] };
+
+
 fn color(r: &Ray, world: &Hitable) -> Vec3 {
     let rec = world.hit(r, 0.0, f32::MAX);
     match rec {
@@ -26,7 +30,7 @@ fn color(r: &Ray, world: &Hitable) -> Vec3 {
         None => {
             let unit_direction = r.direction().unit_vector();
             let t = 0.5 * (unit_direction.y() + 1.0);
-            (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
+            (1.0 - t) * &WHITE_COLOR + t * &LIGHT_BLUE_COLOR
         },
     }
 }
@@ -66,7 +70,7 @@ fn main() {
                 col = col + color(&r, &world);
             }
 
-            col = col / (ns as f32);
+            col /= ns as f32;
 
             let ir = (255.99 * col.r()) as u32;
             let ig = (255.99 * col.g()) as u32;

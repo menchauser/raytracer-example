@@ -3,7 +3,6 @@ use vec::Vec3;
 use ray::Ray;
 
 
-#[derive(Clone)]
 pub struct HitRecord {
     pub t: f32,       // ray position parameter
     pub p: Vec3,      // hit point at parameter t
