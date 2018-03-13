@@ -67,7 +67,7 @@ fn main() {
                 let u = (i as f32 + rng.next_f32()) / (nx as f32);
                 let v = (j as f32 + rng.next_f32()) / (ny as f32);
                 let r = cam.get_ray(u, v);
-                col = col + color(&r, &world);
+                col += color(&r, &world);
             }
 
             col /= ns as f32;
