@@ -48,7 +48,7 @@ fn main() {
     ];
     let world = HitableList { list: objs };
 
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::XorShiftRng::new_unseeded();
 
     for j in (0..ny).rev() {
         for i in 0..nx {
