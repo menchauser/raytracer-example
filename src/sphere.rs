@@ -2,7 +2,6 @@ use vec::*;
 use ray::Ray;
 use hitable::*;
 
-
 pub struct Sphere {
     center: Vec3,
     radius: f32,
@@ -26,7 +25,7 @@ impl Hitable for Sphere {
         let discriminant = b * b - a * c;
 
         if discriminant > 0.0 {
-            let sol1 = (- b - f32::sqrt(discriminant)) / a;
+            let sol1 = (-b - f32::sqrt(discriminant)) / a;
             if sol1 < t_max && sol1 > t_min {
                 let p = &r.point_at_parameter(sol1);
                 let normal = (p - &self.center) / self.radius;
@@ -35,19 +34,19 @@ impl Hitable for Sphere {
                     p: p.clone(),
                     normal: normal,
                 };
-                return Some(rec)
-            } 
-            let sol2 = (- b + f32::sqrt(discriminant)) / a;
+                return Some(rec);
+            }
+            let sol2 = (-b + f32::sqrt(discriminant)) / a;
             if sol2 < t_max && sol2 > t_min {
                 let p = &r.point_at_parameter(sol2);
                 let rec = HitRecord {
                     t: sol1,
                     p: p.clone(),
-                    normal: (p - &self.center) / self.radius
+                    normal: (p - &self.center) / self.radius,
                 };
-                return Some(rec)
+                return Some(rec);
             }
-        } 
-        return None
+        }
+        return None;
     }
 }

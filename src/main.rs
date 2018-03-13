@@ -15,10 +15,8 @@ use camera::*;
 use std::f32;
 use rand::Rng;
 
-
 static WHITE_COLOR: Vec3 = Vec3 { e: [1.0, 1.0, 1.0] };
 static LIGHT_BLUE_COLOR: Vec3 = Vec3 { e: [0.5, 0.7, 1.0] };
-
 
 fn color(r: &Ray, world: &Hitable) -> Vec3 {
     let rec = world.hit(r, 0.0, f32::MAX);
@@ -26,15 +24,14 @@ fn color(r: &Ray, world: &Hitable) -> Vec3 {
         Some(r) => {
             let n = r.normal;
             0.5 * Vec3::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0)
-        },
+        }
         None => {
             let unit_direction = r.direction().unit_vector();
             let t = 0.5 * (unit_direction.y() + 1.0);
             (1.0 - t) * &WHITE_COLOR + t * &LIGHT_BLUE_COLOR
-        },
+        }
     }
 }
-
 
 fn main() {
     let nx = 400;
@@ -45,18 +42,11 @@ fn main() {
 
     let cam = Camera::new();
 
-    let sphere1 = Sphere::new(
-        Vec3::new(0.0, 0.0, -1.0),
-        0.5
-    );
-    let sphere2 = Sphere::new(
-        Vec3::new(0.0, -100.5, -1.0),
-        100.0
-    );
-    let objs: Vec<&Hitable> = vec![&sphere1, &sphere2];
-    let world = HitableList { 
-        list: objs,
-    };
+    let objs: Vec<Box<Hitable>> = vec![
+        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)),
+        Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0)),
+    ];
+    let world = HitableList { list: objs };
 
     let mut rng = rand::thread_rng();
 
