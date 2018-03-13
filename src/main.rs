@@ -16,7 +16,7 @@ use std::f32;
 use rand::Rng;
 
 
-fn color(r: Ray, world: &Hitable) -> Vec3 {
+fn color(r: &Ray, world: &Hitable) -> Vec3 {
     let rec = world.hit(r, 0.0, f32::MAX);
     match rec {
         Some(r) => {
@@ -63,7 +63,7 @@ fn main() {
                 let u = (i as f32 + rng.next_f32()) / (nx as f32);
                 let v = (j as f32 + rng.next_f32()) / (ny as f32);
                 let r = cam.get_ray(u, v);
-                col = col + color(r, &world);
+                col = col + color(&r, &world);
             }
 
             col = col / (ns as f32);
