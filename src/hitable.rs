@@ -1,11 +1,13 @@
 use std::option::Option;
 use vec::Vec3;
 use ray::Ray;
+use material::Material;
 
 pub struct HitRecord {
     pub t: f32,       // ray position parameter
     pub p: Vec3,      // hit point at parameter t
     pub normal: Vec3, // surface normal at hit point
+    pub material: Box<Material>,
 }
 
 pub trait Hitable {

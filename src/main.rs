@@ -5,12 +5,14 @@ mod ray;
 mod hitable;
 mod sphere;
 mod camera;
+mod material;
 
 use vec::*;
 use ray::Ray;
 use hitable::*;
 use sphere::Sphere;
 use camera::*;
+use material::*;
 
 use std::f32;
 
@@ -57,8 +59,8 @@ fn main() {
     let cam = Camera::new();
 
     let objs: Vec<Box<Hitable>> = vec![
-        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)),
-        Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0)),
+        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, lambertian(Vec3::new(0.8, 0.3, 0.3)))),
+        Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0, lambertian(Vec3::new(0.8, 0.0, 0.0)))),
     ];
     let world = HitableList { list: objs };
 

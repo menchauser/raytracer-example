@@ -1,14 +1,16 @@
 use vec::*;
 use ray::Ray;
 use hitable::*;
+use material::Material;
 
 pub struct Sphere {
     center: Vec3,
     radius: f32,
+    material: Material
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f32) -> Sphere {
+    pub fn new(center: Vec3, radius: f32, material: Material) -> Sphere {
         Sphere {
             center: center,
             radius: radius,
@@ -33,6 +35,7 @@ impl Hitable for Sphere {
                     t: sol1,
                     p: p.clone(),
                     normal: normal,
+                    material: Box::new(self.material)
                 };
                 return Some(rec);
             }
@@ -43,6 +46,7 @@ impl Hitable for Sphere {
                     t: sol1,
                     p: p.clone(),
                     normal: (p - &self.center) / self.radius,
+                    material: Box::new(self.material)
                 };
                 return Some(rec);
             }
