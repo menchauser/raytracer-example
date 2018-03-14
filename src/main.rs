@@ -6,24 +6,38 @@ mod hitable;
 mod sphere;
 mod camera;
 
-use vec::Vec3;
+use vec::*;
 use ray::Ray;
 use hitable::*;
 use sphere::Sphere;
 use camera::*;
 
 use std::f32;
-use rand::Rng;
 
 static WHITE_COLOR: Vec3 = Vec3 { e: [1.0, 1.0, 1.0] };
 static LIGHT_BLUE_COLOR: Vec3 = Vec3 { e: [0.5, 0.7, 1.0] };
 
-fn color(r: &Ray, world: &Hitable) -> Vec3 {
-    let rec = world.hit(r, 0.0, f32::MAX);
-    match rec {
-        Some(r) => {
-            let n = r.normal;
-            0.5 * Vec3::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0)
+fn random_in_unit_sphere() -> Vec3 {
+    let singular = Vec3::new(1.0, 1.0, 1.0);
+    loop {
+        let rand_vec = Vec3::new(
+            rand::random::<f32>(),
+            rand::random::<f32>(),
+            rand::random::<f32>(),
+        );
+        let p = 2.0 * rand_vec - &singular;
+        if dot(&p, &p) < 1.0 {
+            break p;
+        }
+    }
+}
+
+fn color(r: &Ray, world: &Hitable, depth: u32) -> Vec3 {
+    match world.hit(r, 0.001, f32::MAX) {
+        Some(rec) => {
+            let target = &rec.p + &rec.normal + random_in_unit_sphere();
+            let new_ray = Ray::new(rec.p.clone(), target - &rec.p);
+            0.5 * color(&new_ray, world, depth + 1)
         }
         None => {
             let unit_direction = r.direction().unit_vector();
@@ -48,16 +62,14 @@ fn main() {
     ];
     let world = HitableList { list: objs };
 
-    let mut rng = rand::XorShiftRng::new_unseeded();
-
     for j in (0..ny).rev() {
         for i in 0..nx {
             let mut col = Vec3::new(0.0, 0.0, 0.0);
             for _ in 0..ns {
-                let u = (i as f32 + rng.next_f32()) / (nx as f32);
-                let v = (j as f32 + rng.next_f32()) / (ny as f32);
+                let u = (i as f32 + rand::random::<f32>()) / (nx as f32);
+                let v = (j as f32 + rand::random::<f32>()) / (ny as f32);
                 let r = cam.get_ray(u, v);
-                col += color(&r, &world);
+                col += color(&r, &world, 0);
             }
 
             col /= ns as f32;

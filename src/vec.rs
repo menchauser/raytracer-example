@@ -113,6 +113,14 @@ impl<'a> ops::Sub for &'a Vec3 {
     }
 }
 
+impl<'a> ops::Sub<&'a Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, other: &Vec3) -> Vec3 {
+        &self - other
+    }
+}
+
 impl<'a> ops::Mul<f32> for &'a Vec3 {
     type Output = Vec3;
 
