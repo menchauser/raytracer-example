@@ -73,6 +73,7 @@ fn main() {
             }
 
             col /= ns as f32;
+            col = Vec3::new(f32::sqrt(col.r()), f32::sqrt(col.g()), f32::sqrt(col.b()));
 
             let ir = (255.99 * col.r()) as u32;
             let ig = (255.99 * col.g()) as u32;
